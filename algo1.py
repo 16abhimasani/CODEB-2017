@@ -21,6 +21,9 @@ for elem in ticList:
             bidPrice = tempParse[bidPriceIndex]
             bidVol = tempParse[bidVolIndex]
             bidPriceTup = ("BID", elem, bidPrice, bidVol)
+            bidVolumeVal = int(bidPriceTup[3])
+            if bidVolumeVal > 1000:
+                bidPriceTup = bidPriceTup + ("FAKE",)
             print(bidPriceTup)
             tempParse = tempParse[bidPriceIndex:]
     while "ASK" in tempParse:
@@ -30,6 +33,9 @@ for elem in ticList:
             askPrice = tempParse[askPriceIndex]
             askVol = tempParse[askVolIndex]
             askPriceTup = ("ASK", elem, askPrice, askVol)
+            askVolumeVal = int(askPriceTup[3])
+            if askVolumeVal > 1000:
+                askPriceTup = askPriceTup + ("FAKE",)
             print(askPriceTup)
             tempParse = tempParse[askPriceIndex:]
 
