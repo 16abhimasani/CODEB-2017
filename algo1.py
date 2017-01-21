@@ -10,7 +10,29 @@ askDict = {}
 
 for elem in ticList:
     orders = run("yungSavage", "2121", "ORDERS {}".format(elem))
-    print(orders)
+    # print(orders)
+    ordersParse = orders.split()
+    # print(ordersParse)
+    tempParse = ordersParse[:]
+    while "BID" in tempParse:
+            bidIndex = tempParse.index("BID")
+            bidPriceIndex = bidIndex + 2
+            bidVolIndex = bidIndex + 3
+            bidPrice = tempParse[bidPriceIndex]
+            bidVol = tempParse[bidVolIndex]
+            bidPriceTup = ("BID", elem, bidPrice, bidVol)
+            print(bidPriceTup)
+            tempParse = tempParse[bidPriceIndex:]
+    while "ASK" in tempParse:
+            askIndex = tempParse.index("ASK")
+            askPriceIndex = askIndex + 2
+            askVolIndex = askIndex + 3
+            askPrice = tempParse[askPriceIndex]
+            askVol = tempParse[askVolIndex]
+            askPriceTup = ("ASK", elem, askPrice, askVol)
+            print(askPriceTup)
+            tempParse = tempParse[askPriceIndex:]
+
     countBid = orders.count("BID")
     bidDict[elem] = countBid
     countAsk = orders.count("ASK")
