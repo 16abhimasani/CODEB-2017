@@ -1,48 +1,92 @@
 from client2 import run
 
-ash = run("yungSavage", "2121", "MY_CASH")
-print(type(ash))
+# ash = run("yungSavage", "2121", "MY_CASH")
+# print(type(ash))
 
 
-ticList = ["ANR","COKE","FORD","GM","INTL","MMM","QQ","RACE","VOD","YUM"]
-bidDict = {}
-askDict = {}
+ticParse = []
+
+ticStr = run("yungSavage", "2121", "SECURITIES")
+ticList = ticStr.split()
+ticList.remove("SECURITIES_OUT")
+
+alphabet = ["A","B","C","D","E","F","G","H","I","J","J","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
 for elem in ticList:
-    orders = run("yungSavage", "2121", "ORDERS {}".format(elem))
+    for letter in alphabet:
+        if elem[0] == letter:
+            ticParse.append(elem)
+
+# print(tic2List)
+
+
+# ticList = ["AMZN","DIS","FB","GOOGL","IBM","IVW","KING","KO","NFLX","TSLA"]
+bidDict = {}
+askDict = {}
+bidData = {"BID" : {}}
+askData = {"ASK" : {}}
+
+for tick in ticParse:
+    orders = run("yungSavage", "2121", "ORDERS {}".format(tick))
     # print(orders)
     ordersParse = orders.split()
     # print(ordersParse)
     tempParse = ordersParse[:]
+    negBidCount = 0
+    negAskCount = 0
+
+    bidData["BID"][tick] = {"Amount" : 0, "Price" : [], "Size" : []}
+    askData["ASK"][tick] = {"Amount" : 0, "Price" : [], "Size" : []}
+
     while "BID" in tempParse:
             bidIndex = tempParse.index("BID")
             bidPriceIndex = bidIndex + 2
             bidVolIndex = bidIndex + 3
             bidPrice = tempParse[bidPriceIndex]
             bidVol = tempParse[bidVolIndex]
-            bidPriceTup = ("BID", elem, bidPrice, bidVol)
+            bidPriceTup = ("BID", tick, bidPrice, bidVol)
             bidVolumeVal = int(bidPriceTup[3])
             if bidVolumeVal > 1000:
                 bidPriceTup = bidPriceTup + ("FAKE",)
+                negBidCount += 1
+            else:
+                bidPriceTup = bidPriceTup + ("REAL",)
             print(bidPriceTup)
             tempParse = tempParse[bidPriceIndex:]
+            priceAppend = bidData["BID"][tick]["Price"]
+            priceAppend.append(bidPrice)
+            sizeAppend = bidData["BID"][tick]["Size"]
+            sizeAppend.append(bidVol)
+
     while "ASK" in tempParse:
             askIndex = tempParse.index("ASK")
             askPriceIndex = askIndex + 2
             askVolIndex = askIndex + 3
             askPrice = tempParse[askPriceIndex]
             askVol = tempParse[askVolIndex]
-            askPriceTup = ("ASK", elem, askPrice, askVol)
+            askPriceTup = ("ASK", tick, askPrice, askVol)
             askVolumeVal = int(askPriceTup[3])
             if askVolumeVal > 1000:
                 askPriceTup = askPriceTup + ("FAKE",)
+                negAskCount += 1
+            else:
+                askPriceTup = askPriceTup + ("REAL",)
             print(askPriceTup)
             tempParse = tempParse[askPriceIndex:]
+            priceAppend = askData["ASK"][tick]["Price"]
+            priceAppend.append(askPrice)
+            sizeAppend = askData["ASK"][tick]["Size"]
+            sizeAppend.append(askVol)
 
     countBid = orders.count("BID")
-    bidDict[elem] = countBid
+    bidDict[tick] = countBid - negBidCount
+    bidData["BID"][tick]["Amount"] = countBid - negBidCount
     countAsk = orders.count("ASK")
-    askDict[elem] = countAsk
+    askDict[tick] = countAsk - negAskCount
+    askData["ASK"][tick]["Amount"] = countAsk - negAskCount
 
 print("BID", bidDict)
 print("ASK", askDict)
+print("------------------------------------------------------------------------------------------------")
+print(bidData)
+print(askData)
