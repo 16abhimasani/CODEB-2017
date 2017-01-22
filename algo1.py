@@ -4,23 +4,38 @@ from client2 import run
 # print(type(ash))
 
 
-ticParse = []
-
 ticStr = run("yungSavage", "2121", "SECURITIES")
-ticList = ticStr.split()
-ticList.remove("SECURITIES_OUT")
+ticRawList = ticStr.split()
+ticRawList.remove("SECURITIES_OUT")
+# print(ticRawList)
 
+ticParse = []
 alphabet = ["A","B","C","D","E","F","G","H","I","J","J","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
-for elem in ticList:
+for elem in ticRawList:
     for letter in alphabet:
         if elem[0] == letter:
             ticParse.append(elem)
+
+divDict = {}
+i = 0
+
+while (i+4) < (len(ticRawList) - 1):
+    tempList = ticRawList[i:(i+4)]
+    try:
+        divDict[ticRawList[i]] = float(tempList[2])
+    except:
+        divDict[ticRawList[i]] = tempList[2]
+    i += 4
+# print(divDict)
+
+
 
 # print(tic2List)
 
 
 # ticList = ["AMZN","DIS","FB","GOOGL","IBM","IVW","KING","KO","NFLX","TSLA"]
+#
 bidDict = {}
 askDict = {}
 bidData = {"BID" : {}}
@@ -85,8 +100,11 @@ for tick in ticParse:
     askDict[tick] = countAsk - negAskCount
     askData["ASK"][tick]["Amount"] = countAsk - negAskCount
 
-print("BID", bidDict)
-print("ASK", askDict)
+print("------------------------------------------------------------------------------------------------")
+print("BID AMOUNT", bidDict)
+print("ASK AMOUNT", askDict)
+print("DIV", divDict)
 print("------------------------------------------------------------------------------------------------")
 print(bidData)
+print("------------------------------------------------------------------------------------------------")
 print(askData)
