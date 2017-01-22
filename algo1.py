@@ -10,7 +10,7 @@ ticRawList.remove("SECURITIES_OUT")
 # print(ticRawList)
 
 ticParse = []
-alphabet = ["A","B","C","D","E","F","G","H","I","J","J","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
 for elem in ticRawList:
     for letter in alphabet:
