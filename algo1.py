@@ -19,7 +19,6 @@ for elem in ticRawList:
 
 divDict = {}
 i = 0
-
 while (i+4) < (len(ticRawList) - 1):
     tempList = ticRawList[i:(i+4)]
     try:
